@@ -1,9 +1,12 @@
 <template>
   <div class="min-h-screen bg-background">
+    <Head title="Dashboard - Monkey Collector Admin" />
+
     <!-- Header -->
     <header class="sticky top-0 z-50 w-full border-b border-border bg-card/95 backdrop-blur shadow-sm">
       <div class="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/admin" class="flex items-center gap-2">
+          <svg class="h-6 w-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
           <span class="text-lg font-black text-yellow-400">MONKEY</span>
           <span class="text-lg font-bold text-muted-foreground">ADMIN</span>
         </Link>
@@ -310,26 +313,34 @@
 
     <!-- Modal Eliminar -->
     <Teleport to="body">
-      <div v-if="deleteTarget" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-        <div class="w-full max-w-md rounded-2xl border border-border bg-background p-6 shadow-2xl">
-          <div class="flex items-start gap-4">
-            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/10 text-red-500">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16"/></svg>
+      <div v-if="deleteTarget" class="fixed inset-0 z-50 flex items-center justify-center p-4" @click.self="deleteTarget = null">
+        <!-- Fondo con degradado animado -->
+        <div class="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-yellow-950/40 backdrop-blur-md" @click="deleteTarget = null" />
+        
+        <div class="relative w-full max-w-md rounded-2xl border border-white/10 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-2xl shadow-black/60">
+          <!-- Franja decorativa superior -->
+          <div class="h-1 w-full rounded-t-2xl bg-gradient-to-r from-yellow-400 via-yellow-300 to-yellow-500" />
+
+          <div class="p-6">
+            <div class="flex items-start gap-4">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/10 text-red-500">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0 1 16.138 21H7.862a2 2 0 0 1-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v3M4 7h16"/></svg>
+              </div>
+              <div>
+                <h2 class="text-base font-bold text-white">¿Eliminar producto?</h2>
+                <p class="mt-1 text-sm text-zinc-400">Esta acción no se puede deshacer. <span class="font-medium text-white">{{ deleteTarget.name }}</span> será eliminado permanentemente.</p>
+              </div>
             </div>
-            <div>
-              <h2 class="text-base font-bold">¿Eliminar producto?</h2>
-              <p class="mt-1 text-sm text-muted-foreground">Esta acción no se puede deshacer. <span class="font-medium text-foreground">{{ deleteTarget.name }}</span> será eliminado permanentemente.</p>
+            <div class="mt-6 flex justify-end gap-2">
+              <button @click="deleteTarget = null"
+                class="rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-zinc-300 hover:bg-white/10 hover:text-white transition-all">
+                Cancelar
+              </button>
+              <button @click="deleteProduct" :disabled="deleting"
+                class="rounded-xl bg-red-500 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-red-500/30 hover:bg-red-600 transition-all disabled:opacity-50">
+                {{ deleting ? 'Eliminando...' : 'Eliminar' }}
+              </button>
             </div>
-          </div>
-          <div class="mt-6 flex justify-end gap-2">
-            <button @click="deleteTarget = null"
-              class="rounded-xl border border-border px-4 py-2.5 text-sm font-medium shadow-sm hover:bg-foreground/5 transition-all">
-              Cancelar
-            </button>
-            <button @click="deleteProduct" :disabled="deleting"
-              class="rounded-xl bg-red-500 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-red-500/30 hover:bg-red-600 transition-all disabled:opacity-50">
-              {{ deleting ? 'Eliminando...' : 'Eliminar' }}
-            </button>
           </div>
         </div>
       </div>
@@ -339,7 +350,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { Link, router } from '@inertiajs/vue3'
+import { Head, Link, router } from '@inertiajs/vue3'
 
 const props = defineProps({ products: Array })
 

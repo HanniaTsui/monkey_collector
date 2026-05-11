@@ -2,9 +2,9 @@
 import GuestLayout from '@/Layouts/GuestLayout.vue'
 import { Head, Link, useForm } from '@inertiajs/vue3'
 
-defineProps({ canResetPassword: Boolean, status: String })
+defineProps({ status: String })
 
-const form = useForm({ email: '', password: '', remember: false })
+const form = useForm({ email: '', password: '' })
 const submit = () => form.post(route('login'), { onFinish: () => form.reset('password') })
 </script>
 
@@ -23,7 +23,7 @@ const submit = () => form.post(route('login'), { onFinish: () => form.reset('pas
 
     <form @submit.prevent="submit" class="space-y-4">
       <div class="space-y-1.5">
-        <label for="email" class="text-sm font-medium">Email</label>
+        <label for="email" class="text-sm font-medium">Correo</label>
         <input id="email" v-model="form.email" type="email" required autofocus autocomplete="username"
           class="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400/30 focus:border-yellow-400/50 transition-all"
           :class="{ 'border-red-500': form.errors.email }" />
@@ -36,17 +36,6 @@ const submit = () => form.post(route('login'), { onFinish: () => form.reset('pas
           class="w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400/30 focus:border-yellow-400/50 transition-all"
           :class="{ 'border-red-500': form.errors.password }" />
         <p v-if="form.errors.password" class="text-xs text-red-500">{{ form.errors.password }}</p>
-      </div>
-
-      <div class="flex items-center justify-between">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" v-model="form.remember" class="rounded border-border accent-yellow-400" />
-          <span class="text-sm text-muted-foreground">Recordarme</span>
-        </label>
-        <Link v-if="canResetPassword" :href="route('password.request')"
-          class="text-sm text-muted-foreground hover:text-foreground transition-colors">
-          ¿Olvidaste tu contraseña?
-        </Link>
       </div>
 
       <button type="submit" :disabled="form.processing"

@@ -1,5 +1,6 @@
 <template>
   <StoreLayout>
+    <Head title="Monkey Collector | Novedades" />
     <section class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
 
       <!-- Título -->
@@ -95,23 +96,62 @@
           </div>
         </div>
       </div>
+
+      <div v-if="props.products.last_page > 1" class="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-sm text-muted-foreground">
+          Página {{ props.products.current_page }} de {{ props.products.last_page }}
+        </p>
+
+        <nav class="flex flex-wrap items-center gap-2">
+          <Link
+            v-if="props.products.current_page > 1"
+            :href="route('novedades', { page: props.products.current_page - 1 })"
+            class="rounded-xl border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-foreground/5 transition-all"
+          >
+            Anterior
+          </Link>
+
+          <Link
+            v-for="page in pageNumbers"
+            :key="page"
+            :href="route('novedades', { page })"
+            :class="page === props.products.current_page ? 'rounded-xl bg-yellow-400 px-4 py-2 text-sm font-semibold text-black shadow-md shadow-yellow-400/20' : 'rounded-xl border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-foreground/5 transition-all'"
+          >
+            {{ page }}
+          </Link>
+
+          <Link
+            v-if="props.products.current_page < props.products.last_page"
+            :href="route('novedades', { page: props.products.current_page + 1 })"
+            class="rounded-xl border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-foreground/5 transition-all"
+          >
+            Siguiente
+          </Link>
+        </nav>
+      </div>
     </section>
   </StoreLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import { Head, Link } from '@inertiajs/vue3'
 import StoreLayout from '@/Layouts/StoreLayout.vue'
 
-const props = defineProps({ products: Array, categorias: Array })
+const props = defineProps({ products: Object, categorias: Array })
 
 const activeCategoria = ref(null)
 
+const productData = computed(() => props.products.data ?? [])
 const filteredProducts = computed(() =>
   activeCategoria.value
-    ? props.products.filter(p => p.categoria === activeCategoria.value)
-    : props.products
+    ? productData.value.filter(p => p.categoria === activeCategoria.value)
+    : productData.value
 )
+const pageNumbers = computed(() => {
+  const lastPage = props.products.last_page ?? 1
+  return Array.from({ length: lastPage }, (_, i) => i + 1)
+})
 
 const imgSrc = (path) => path?.startsWith('http') ? path : `/storage/${path}`
 

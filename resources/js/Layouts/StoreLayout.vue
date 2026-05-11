@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-h-screen flex-col bg-background text-foreground">
     <!-- Header -->
-    <header class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur shadow-sm">
+    <header class="sticky top-0 z-50 w-full border-b border-border/40 bg-white shadow-sm">
       <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" class="flex items-center gap-2">
           <img src="/images/logo.png" alt="Monkey Collector" class="h-8 w-auto" />

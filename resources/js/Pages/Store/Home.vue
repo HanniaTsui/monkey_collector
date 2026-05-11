@@ -1,5 +1,6 @@
 <template>
   <StoreLayout>
+    <Head title="Monkey Collector | Ropa Premium" />
     <!-- Hero -->
     <section class="relative overflow-hidden border-b border-border/40" style="background-image: url('/images/banner.png'); background-size: cover; background-position: center;">
       <!-- Overlay oscuro sobre el banner -->
@@ -38,7 +39,8 @@
           <div>
             <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">Colección</h2>
             <p class="mt-1 text-sm text-muted-foreground">
-              {{ filteredProducts.length }} {{ filteredProducts.length === 1 ? 'producto' : 'productos' }} disponibles
+              {{ filteredProducts.length }} {{ filteredProducts.length === 1 ? 'producto' : 'productos' }}
+              <span v-if="props.products.total !== filteredProducts.length">de {{ props.products.total }} totales</span>
             </p>
           </div>
         </div>
@@ -72,26 +74,66 @@
       <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <ProductCard v-for="product in filteredProducts" :key="product.id" :product="product" />
       </div>
+
+      <div v-if="props.products.last_page > 1" class="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-sm text-muted-foreground">
+          Página {{ props.products.current_page }} de {{ props.products.last_page }}
+        </p>
+
+        <nav class="flex flex-wrap items-center gap-2">
+          <Link
+            v-if="props.products.current_page > 1"
+            :href="route('home', { page: props.products.current_page - 1 })"
+            class="rounded-xl border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-foreground/5 transition-all"
+          >
+            Anterior
+          </Link>
+
+          <Link
+            v-for="page in pageNumbers"
+            :key="page"
+            :href="route('home', { page })"
+            :class="page === props.products.current_page ? 'rounded-xl bg-yellow-400 px-4 py-2 text-sm font-semibold text-black shadow-md shadow-yellow-400/20' : 'rounded-xl border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-foreground/5 transition-all'"
+          >
+            {{ page }}
+          </Link>
+
+          <Link
+            v-if="props.products.current_page < props.products.last_page"
+            :href="route('home', { page: props.products.current_page + 1 })"
+            class="rounded-xl border border-border px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-foreground/5 transition-all"
+          >
+            Siguiente
+          </Link>
+        </nav>
+      </div>
     </section>
   </StoreLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import { Head, Link } from '@inertiajs/vue3'
 import StoreLayout from '@/Layouts/StoreLayout.vue'
 import ProductCard from '@/Components/Store/ProductCard.vue'
 
-const props = defineProps({ products: Array })
+const props = defineProps({ products: Object })
 
 const activeSize = ref(null)
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
 
+const productData = computed(() => props.products.data ?? [])
 const filteredProducts = computed(() => {
-  let result = [...props.products]
+  let result = [...productData.value]
   if (activeSize.value) {
     result = result.filter(p => (p.stock_por_talla?.[activeSize.value] ?? 0) > 0)
   }
   return result
+})
+
+const pageNumbers = computed(() => {
+  const lastPage = props.products.last_page ?? 1
+  return Array.from({ length: lastPage }, (_, i) => i + 1)
 })
 
 const toggleSize = (size) => { activeSize.value = activeSize.value === size ? null : size }

@@ -1,5 +1,6 @@
 <template>
   <StoreLayout>
+    <Head title="Monkey Collector | Guía de Tallas" />
     <div class="mx-auto max-w-4xl px-4 py-14 sm:px-6 lg:px-8">
       <div class="mb-12 text-center">
         <h1 class="text-3xl font-black tracking-tight sm:text-4xl">Guía de Tallas</h1>
@@ -94,6 +95,7 @@
 </template>
 
 <script setup>
+import { Head } from '@inertiajs/vue3'
 import StoreLayout from '@/Layouts/StoreLayout.vue'
 
 const menSizes = [

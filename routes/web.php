@@ -18,6 +18,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 });
 
+Route::middleware(['auth', 'verified'])->get('/dashboard', [ProductController::class, 'index'])->name('dashboard');
+
 // Perfil (Breeze)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
