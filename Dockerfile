@@ -35,11 +35,6 @@ RUN composer install --no-dev --optimize-autoloader
 RUN npm install
 RUN npm run build
 
-RUN php artisan config:clear
-RUN php artisan route:clear
-RUN php artisan view:clear
-RUN php artisan cache:clear
-
 EXPOSE 8080
 
 CMD php artisan migrate --force && \
