@@ -37,4 +37,4 @@ RUN npm run build
 
 EXPOSE 8080
 
-CMD php artisan serve --host=0.0.0.0 --port=${PORT} 
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=$PORT"]
